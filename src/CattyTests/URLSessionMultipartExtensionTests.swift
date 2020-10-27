@@ -20,30 +20,38 @@
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-import Foundation
+import XCTest
 
-public let httpBoundary = "12345"
+@testable import Pocket_Code
 
-extension URLSession {
-    func multipartUploadTask(with request: URLRequest, from formData: [String: String]?, attachmentData: [String: Data]?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> Void
-        //URLSessionUploadTask
-    {
-        /*let url = URL(string: "https://catrob.at")
+final class URLSessionMultipartExtensionTests: XCTestCase {
+
+    var project: Project!
+
+    override func setUp() {
+        super.setUp()
+        self.project = ProjectMock()
+        self.project.header.programName = "testProjectName"
+
+    }
+
+    func testBodyAndHeader() {
+
         let session = URLSession.shared
+
+        let url = URL(string: "https://catrob.at")
         var urlRequest = URLRequest(url: url!)
         urlRequest.httpMethod = "POST"
 
-        urlRequest.setValue("multipart/form-data; boundary=\(httpBoundary)", forHTTPHeaderField: "Content-Type")*/
+        urlRequest.setValue("multipart/form-data; boundary=\(httpBoundary)", forHTTPHeaderField: "Content-Type")
+        let fromData = ["1":"1","2":"2"]
+        let attachmentData = ["1":Data.init(base64Encoded: "Test1")!,"2":Data.init(base64Encoded: "Test2")!]
 
-        for dataString in formData! {
-            print(dataString)
+
+        session.multipartUploadTask(with: urlRequest, from: fromData, attachmentData: attachmentData) { (Data, URLResponse, Error) in
+            print(Data as Any)
+            print(URLResponse as Any)
+            print(Error as Any)
         }
-
-        for data in attachmentData! {
-            print(data)
-        }
-
-       // return URLSession.shared.uploadTask(with: urlRequest, from: attachmentData) { (<#Data?#>, <#URLResponse?#>, <#Error?#>) in <#code#>
-        //}
     }
 }
