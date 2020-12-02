@@ -87,6 +87,7 @@
             ThinkForBubbleBrick(),
             ThinkBubbleBrick(),
             AskBrick(),
+            SetLookByIndexBrick(),
             // pen bricks
             PenDownBrick(),
             PenUpBrick(),
