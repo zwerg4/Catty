@@ -64,6 +64,12 @@ class CBSpriteNode: SKSpriteNode {
             super.init(texture: texture, color: color, size: textureSize)
             self.currentLook = firstLook
             self.currentLook = firstLook
+            self.physicsBody = SKPhysicsBody.init(texture: texture, size: texture.size())
+            self.physicsBody?.collisionBitMask = 0
+            self.physicsBody?.categoryBitMask = 1
+            self.physicsBody?.contactTestBitMask = 1
+            self.physicsBody?.isDynamic = true
+            self.physicsBody?.affectedByGravity = false
         } else {
             super.init(texture: nil, color: color, size: CGSize.zero)
         }
@@ -71,6 +77,7 @@ class CBSpriteNode: SKSpriteNode {
         self.spriteObject.spriteNode = self
         self.name = spriteObject.name
         self.isUserInteractionEnabled = false
+
         setLook()
     }
 
@@ -146,6 +153,13 @@ class CBSpriteNode: SKSpriteNode {
         if yScale != defaultSize {
             self.yScale = yScale
         }
+
+        self.physicsBody = SKPhysicsBody.init(texture: texture, size: texture.size())
+        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.categoryBitMask = 1
+        self.physicsBody?.contactTestBitMask = 1
+        self.physicsBody?.isDynamic = true
+        self.physicsBody?.affectedByGravity = false
     }
 
     @objc func nextLook() -> Look? {

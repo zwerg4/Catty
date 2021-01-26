@@ -30,14 +30,14 @@ class XMLParserFormulaTests093: XMLAbstractTest {
 
     override func setUp() {
         super.setUp()
-        parserContext = CBXMLParserContext(languageVersion: CGFloat(Float32(0.93)), andRootElement: GDataXMLElement())
+        parserContext = CBXMLParserContext(languageVersion: CGFloat(Float32(0.993)), andRootElement: GDataXMLElement())
         formulaManager = FormulaManager(stageSize: Util.screenSize(true), landscapeMode: false)
     }
 
     func testValidFormulaList() {
         let document = self.getXMLDocumentForPath(xmlPath: self.getPathForXML(xmlFile: "ValidFormulaList"))
 
-        let brickElement = self.getXMLElementsForXPath(document, xPath: "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[2]")
+        let brickElement = self.getXMLElementsForXPath(document, xPath: "//program/scenes/scene[1]/objectList/object[1]/scriptList/script[1]/brickList/brick[2]")
         XCTAssertEqual(brickElement!.count, 1)
 
         let brickXMLElement = brickElement!.first
@@ -52,6 +52,30 @@ class XMLParserFormulaTests093: XMLAbstractTest {
         let formula = setVariableBrick.variableFormula
         // formula value should be: (1 * (-2)) + (3 / 4) = -1,25
         XCTAssertEqual(self.formulaManager.interpretDouble(formula!, for: SpriteObject()), -1.25, accuracy: 0.00001, "Formula not correctly parsed")
+    }
+
+    func testValidCollisionFormula() {
+        let document = self.getXMLDocumentForPath(xmlPath: self.getPathForXML(xmlFile: "ValidFormulaList"))
+
+        let brickElement = self.getXMLElementsForXPath(document, xPath: "//program/scenes/scene[1]/objectList/object[1]/scriptList/script[1]/brickList/brick[4]")
+        XCTAssertEqual(brickElement!.count, 1)
+
+        let brickXMLElement = brickElement!.first
+        let brick = self.parserContext!.parse(from: brickXMLElement, withClass: SetVariableBrick.self) as! Brick
+
+        XCTAssertTrue(brick.isKind(of: SetVariableBrick.self), "Invalid brick class")
+
+        let setVariableBrick = brick as! SetVariableBrick
+        let formulaElement = setVariableBrick.variableFormula.formulaTree
+
+        XCTAssertTrue(ElementType.FUNCTION == formulaElement?.type)
+        XCTAssertEqual(CollisionFunction.tag, formulaElement?.value)
+        XCTAssertNotNil(formulaElement?.leftChild)
+        XCTAssertNil(formulaElement?.rightChild)
+
+        let leftChild = formulaElement?.leftChild
+        XCTAssertTrue(ElementType.STRING == leftChild?.type)
+        XCTAssertEqual("Mole 1", leftChild?.value)
     }
 
     func testUnknownType() {
