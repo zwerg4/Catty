@@ -189,6 +189,14 @@ final class Stage: SKScene, StageProtocol {
             spriteNode.isUserInteractionEnabled = true
             scheduler.registerSpriteNode(spriteNode)
 
+            self.name = "scene"
+            self.physicsBody = SKPhysicsBody (edgeLoopFrom: self.frame)
+            self.physicsBody?.collisionBitMask = 0
+            self.physicsBody?.categoryBitMask = 2
+            self.physicsBody?.contactTestBitMask = 1
+            self.physicsBody?.isDynamic = true
+            self.physicsBody?.affectedByGravity = false
+
             for script in scriptList {
                 let scriptSequence = frontend.computeSequenceListForScript(script)
                 let instructions = backend.instructionsForSequence(scriptSequence.sequenceList)

@@ -34,6 +34,77 @@
                 fatalError("This should never happen!")
             }
 
+        var amountBoarderContacts = 0
+        if object.spriteNode.physicsBody?.allContactedBodies().count ?? 0 > 0 {
+            for index in 0...((object.spriteNode.physicsBody?.allContactedBodies().count ?? 0) - 1) where object.spriteNode.physicsBody?.allContactedBodies()[index].node?.name == "scene" {
+                amountBoarderContacts += 1
+            }
+        }
+
+        NSLog("contacted boarders: \(amountBoarderContacts)")
+
+        return {
+            if(amountBoarderContacts > 0) {
+                let position = spriteNode.catrobatPosition
+                var xPosition = CGFloat(position.x)
+                var yPosition = CGFloat(position.y)
+                var rotation = spriteNode.catrobatRotation
+                let leftEdge = -scene.size.width / 2.0 + (spriteNode.size.width / 2.0)
+                let rightEdge = scene.size.width / 2.0 - (spriteNode.size.width / 2.0)
+                let upperEdge = scene.size.height / 2.0 - (spriteNode.size.height / 2.0)
+                let lowerEdge = -scene.size.height / 2.0 + (spriteNode.size.height / 2.0)
+
+                NSLog("collison at x: \(spriteNode.position.x) (\(scene.size.width))  y: \(spriteNode.position.y) (\(scene.size.height))")
+                if spriteNode.position.x > (scene.size.width/2) {
+                    //rechte seite
+                    if(spriteNode.position.y > scene.size.height/2) {
+                        //oben
+                        if abs(spriteNode.position.x + (spriteNode.size.width/2) - scene.size.width) < abs(spriteNode.position.y + (spriteNode.size.height/2) - scene.size.height) {
+                            NSLog("rechts")
+                            if self.isLookingRight(rotation) {
+                                rotation = -rotation
+                            }
+                            xPosition = rightEdge + abs(spriteNode.position.x + (spriteNode.size.width / 2) - scene.size.width)
+                        } else {
+                            NSLog("oben")
+                            if self.isLookingUp(rotation) {
+                                rotation = 180 - rotation
+                            }
+                            yPosition = upperEdge + abs(spriteNode.position.y + (spriteNode.size.height / 2) - scene.size.height)
+                        }
+                    } else {
+                        //unten
+                        if abs(spriteNode.position.x + (spriteNode.size.width / 2) - scene.size.width) < abs(spriteNode.position.y - (spriteNode.size.height / 2)) {
+                            NSLog("rechts")
+                            if self.isLookingRight(rotation) {
+                                rotation = -rotation
+                            }
+                            xPosition = rightEdge + abs(spriteNode.position.x + (spriteNode.size.width / 2) - scene.size.width)
+                        } else {
+                            NSLog("unten")
+                            if self.isLookingDown(rotation) {
+                                rotation = 180 - rotation
+                            }
+                            yPosition = lowerEdge - abs(spriteNode.position.y - (spriteNode.size.height/2))
+                        }
+                    }
+                } else {
+                    //linke seite
+                    if(spriteNode.position.y > scene.size.height/2) {
+                        //oben
+
+                    } else {
+                        //unten
+
+                    }
+                }
+                spriteNode.catrobatRotation = rotation
+                spriteNode.catrobatPosition = CBPosition(x: Double(xPosition), y: Double(yPosition))
+            }
+        }
+
+
+/*
         return {
             let width = spriteNode.size.width
             let height = spriteNode.size.height
@@ -80,7 +151,7 @@
 
             spriteNode.catrobatRotation = rotation
             spriteNode.catrobatPosition = CBPosition(x: Double(xPosition), y: Double(yPosition))
-        }
+        } */
     }
 
     func isLookingDown(_ rotation: Double) -> Bool {
