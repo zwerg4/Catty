@@ -132,4 +132,8 @@ final class XMLSerializerBlackBoxTests: XMLAbstractTest {
     func testGoToBrickWithNotYetSerializedSpriteObject() {
         self.testParseXMLAndSerializeProjectAndCompareXML(xmlFile: "GoToBrick_0993")
     }
+
+    func testCollisionFormulaSerialization() {
+        self.testParseXMLAndSerializeProjectAndCompareXML(xmlFile: "collisionTest0993")
+    }
 }

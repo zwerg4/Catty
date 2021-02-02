@@ -54,6 +54,30 @@ class XMLParserFormulaTests093: XMLAbstractTest {
         XCTAssertEqual(self.formulaManager.interpretDouble(formula!, for: SpriteObject()), -1.25, accuracy: 0.00001, "Formula not correctly parsed")
     }
 
+    func testValidCollisionFormula() {
+        let document = self.getXMLDocumentForPath(xmlPath: self.getPathForXML(xmlFile: "ValidFormulaList"))
+
+        let brickElement = self.getXMLElementsForXPath(document, xPath: "//program/objectList/object[2]/scriptList/script[1]/brickList/brick[3]")
+        XCTAssertEqual(brickElement!.count, 1)
+
+        let brickXMLElement = brickElement!.first
+        let brick = self.parserContext!.parse(from: brickXMLElement, withClass: PlaceAtBrick.self) as! Brick
+
+        XCTAssertTrue(brick.isKind(of: PlaceAtBrick.self), "Invalid brick class")
+
+        let placeAtBrick = brick as! PlaceAtBrick
+        let formulaElement = placeAtBrick.xPosition.formulaTree
+
+        XCTAssertTrue(ElementType.FUNCTION == formulaElement?.type)
+        XCTAssertEqual(CollisionFunction.tag, formulaElement?.value)
+        XCTAssertNotNil(formulaElement?.leftChild)
+        XCTAssertNil(formulaElement?.rightChild)
+
+        let leftChild = formulaElement?.leftChild
+        XCTAssertTrue(ElementType.STRING == leftChild?.type)
+        XCTAssertEqual("Mole 2", leftChild?.value)
+    }
+
     func testUnknownType() {
         let document = self.getXMLDocumentForPath(xmlPath: self.getPathForXML(xmlFile: "ValidFormulaList"))
         let brickElement = self.getXMLElementsForXPath(document, xPath: "//program/objectList/object[4]/scriptList/script[1]/brickList/brick[4]")

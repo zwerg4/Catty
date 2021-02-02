@@ -115,6 +115,7 @@
 #import "ThinkBubbleBrick.h"
 #import "ThinkForBubbleBrick.h"
 #import "AddItemToUserListBrick+CBXMLHandler.h"
+#import "PlaceAtBrick+CBXMLHandler.h"
 
 // BrickCells
 #import "RepeatBrickCell.h"
