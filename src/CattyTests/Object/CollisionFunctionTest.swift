@@ -25,7 +25,7 @@ import XCTest
 
 @testable import Pocket_Code
 
-final class CollisionFunctionUnitTest: XMLAbstractTest {
+final class CollisionFunctionTests: XMLAbstractTest {
     var skView: SKView!
     let stageSize = Util.screenSize(true)
 
