@@ -34,10 +34,6 @@
         return {
             let sizeInPercent = formulaInterpreter.interpretDouble(self.size, for: object)
             spriteNode.catrobatSize = sizeInPercent
-            NSLog("size: \(spriteNode.size) catrobat_size: \(spriteNode.catrobatSize) ")
-            let resized = CGSize(width: (spriteNode.texture?.size().width)! * CGFloat(sizeInPercent / 100), height: (spriteNode.texture?.size().height)! * CGFloat(sizeInPercent / 100))
-            NSLog("resized: \(resized) ")
-            spriteNode.setPhyicsBody(size: resized)
         }
     }
 }
