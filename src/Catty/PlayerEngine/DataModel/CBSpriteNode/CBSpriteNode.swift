@@ -272,5 +272,15 @@ class CBSpriteNode: SKSpriteNode {
         self.physicsBody?.contactTestBitMask = 1
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
+        self.isUserInteractionEnabled = true
     }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+        if let touch = touches.first {
+            print("\(touch)")
+        }
+        super.touchesBegan(touches, with: event)
+    }
+
 }

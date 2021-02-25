@@ -20,6 +20,8 @@
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+import UIKit
+
 @objc class CollisionFunction: NSObject, SingleParameterDoubleObjectFunction {
 
     @objc static var tag = "COLLISION_FORMULA"
@@ -28,6 +30,8 @@
     static var requiredResource = ResourceType.noResources
     static var isIdempotent = true
     static let position = 130
+
+    var spriteObject_ : SpriteObject? = nil
 
     func tag() -> String {
         type(of: self).tag
@@ -50,6 +54,8 @@
             return 0.0
         }
 
+        spriteObject_ = spriteObject
+
         if let unwrapped_allContactedBodies = spriteObject.spriteNode.physicsBody?.allContactedBodies() {
             if spriteObject.spriteNode.physicsBody?.allContactedBodies().count ?? 0 > 0 {
                 return checkForContact(contactedBodies: unwrapped_allContactedBodies, parameter: value)
@@ -67,6 +73,17 @@
 
     func checkForContact(contactedBodies: [SKPhysicsBody], parameter: String) -> Double {
         for index in 0...(contactedBodies.count - 1) where contactedBodies[index].node?.name == parameter {
+            guard let node = contactedBodies[index].node
+            else { return 0.0 }
+            let touchLocation = node.position
+            let image = spriteObject_?.spriteNode.currentUIImageLook
+            let imagesize = image?.size
+            let imagePosition = spriteObject_?.spriteNode.position
+            let xPos = touchLocation.x - (((spriteObject_?.spriteNode.position.x)!))
+            let yPos = touchLocation.y - (((spriteObject_?.spriteNode.position.y)!))
+            NSLog("touch location: \(touchLocation) obj1_transp: \(            spriteObject_!.spriteNode.currentUIImageLook?.isTransparentPixel(at: CGPoint(x: xPos, y: yPos)))")
+            NSLog("transparen 0/0: \(image?.isTransparentPixel(at: CGPoint(x: 0,y: 0)))")
+            NSLog("transparen 144/144: \(image?.isTransparentPixel(at: CGPoint(x: 144,y: 144)))")
             return 1.0
         }
         return 0.0
