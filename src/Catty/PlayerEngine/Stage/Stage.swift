@@ -23,7 +23,7 @@
 import SpriteKit
 
 @objc
-final class Stage: SKScene, StageProtocol {
+final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
 
     // MARK: - Properties
     final let scheduler: CBSchedulerProtocol
@@ -318,6 +318,39 @@ final class Stage: SKScene, StageProtocol {
         self.enumerateChildNodes(withName: SpriteKitDefines.stampedSpriteNodeName) { node, _ in
             node.removeFromParent()
         }
+    }
+
+    func setPhyicsBody(spriteNode: CBSpriteNode, size: CGSize) {
+
+        if spriteNode.catrobatSize < 100.0 {
+            let resized = CGSize(width: size.width * CGFloat(spriteNode.catrobatSize / 100), height: size.height * CGFloat(spriteNode.catrobatSize / 100))
+            spriteNode.physicsBody = SKPhysicsBody.init(rectangleOf: resized)
+        } else {
+            spriteNode.physicsBody = SKPhysicsBody.init(rectangleOf: size)
+        }
+        spriteNode.physicsBody?.collisionBitMask = 0
+        spriteNode.physicsBody?.categoryBitMask = 1
+        spriteNode.physicsBody?.contactTestBitMask = 1
+        spriteNode.physicsBody?.isDynamic = true
+        spriteNode.physicsBody?.affectedByGravity = false
+        spriteNode.isUserInteractionEnabled = false
+
+        self.addChild(spriteNode)
+
+        self.scene?.physicsWorld.contactDelegate = self
 
     }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        NSLog("scene touches began!!")
+        if let touch = touches.first {
+            print("\(touch)")
+        }
+        super.touchesBegan(touches, with: event)
+    }
+
+    func didBeginContact(contact: SKPhysicsContact) {
+        NSLog("scene contact began!!")
+    }
+
 }

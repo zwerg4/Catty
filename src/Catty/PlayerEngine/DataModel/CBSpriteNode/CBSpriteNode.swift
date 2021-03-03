@@ -21,7 +21,7 @@
  */
 
 @objc
-class CBSpriteNode: SKSpriteNode {
+class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
 
     // MARK: - Properties
     @objc var spriteObject: SpriteObject
@@ -261,6 +261,8 @@ class CBSpriteNode: SKSpriteNode {
     }
 
     func setPhyicsBody(size: CGSize) {
+        /*
+        NSLog("setPhysicsbody for: \(self.currentLook?.fileName)")
         if catrobatSize < 100.0 {
             let resized = CGSize(width: size.width * CGFloat(catrobatSize / 100), height: size.height * CGFloat(catrobatSize / 100))
             self.physicsBody = SKPhysicsBody.init(rectangleOf: resized)
@@ -270,17 +272,33 @@ class CBSpriteNode: SKSpriteNode {
         self.physicsBody?.collisionBitMask = 0
         self.physicsBody?.categoryBitMask = 1
         self.physicsBody?.contactTestBitMask = 1
-        self.physicsBody?.isDynamic = true
+        self.physicsBody?.isDynamic = false
         self.physicsBody?.affectedByGravity = false
-        self.isUserInteractionEnabled = true
+       // self.isUserInteractionEnabled = false
+       // guard let stage = self.scene. as? Stage else { return }
+        NSLog("after RETURN")
+       // self.stage.addChild(self)
+        self.scene?.addChild(self)
+        self.scene?.physicsWorld.contactDelegate = self.scene as! SKPhysicsContactDelegate */
+
+        guard let playerStage = (scene as? Stage) else {
+            NSLog("MAYDAY")
+            return }
+
+        playerStage.setPhyicsBody(spriteNode: self, size: size)
+
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-
+        NSLog("touches began!!")
         if let touch = touches.first {
             print("\(touch)")
         }
         super.touchesBegan(touches, with: event)
+    }
+
+    func didBeginContact(contact: SKPhysicsContact) {
+        NSLog("contact began!!")
     }
 
 }

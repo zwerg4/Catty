@@ -81,9 +81,9 @@ import UIKit
             let imagePosition = spriteObject_?.spriteNode.position
             let xPos = touchLocation.x - (((spriteObject_?.spriteNode.position.x)!))
             let yPos = touchLocation.y - (((spriteObject_?.spriteNode.position.y)!))
-            NSLog("touch location: \(touchLocation) obj1_transp: \(            spriteObject_!.spriteNode.currentUIImageLook?.isTransparentPixel(at: CGPoint(x: xPos, y: yPos)))")
-            NSLog("transparen 0/0: \(image?.isTransparentPixel(at: CGPoint(x: 0,y: 0)))")
-            NSLog("transparen 144/144: \(image?.isTransparentPixel(at: CGPoint(x: 144,y: 144)))")
+            //NSLog("touch location: \(touchLocation) obj1_transp: \(            spriteObject_!.spriteNode.currentUIImageLook?.isTransparentPixel(at: CGPoint(x: xPos, y: yPos)))")
+           // NSLog("transparen 0/0: \(image?.isTransparentPixel(at: CGPoint(x: 0,y: 0)))")
+           // NSLog("transparen 144/144: \(image?.isTransparentPixel(at: CGPoint(x: 144,y: 144)))")
             return 1.0
         }
         return 0.0
