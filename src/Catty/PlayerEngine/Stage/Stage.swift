@@ -23,7 +23,7 @@
 import SpriteKit
 
 @objc
-final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
+final class Stage: SKScene, SKPhysicsContactDelegate, StageProtocol {
 
     // MARK: - Properties
     final let scheduler: CBSchedulerProtocol
@@ -34,6 +34,9 @@ final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
     private final let soundEngine: AudioEngineProtocol
     private final let logger: CBLogger
     private var frameCounter: Int
+
+    private var touched: Bool
+    private var contactPoint: SKPhysicsContact
 
     init(size: CGSize,
          logger: CBLogger,
@@ -51,6 +54,8 @@ final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
         self.formulaManager = formulaManager
         self.soundEngine = soundEngine
         self.frameCounter = 0
+        self.touched = false
+        contactPoint = SKPhysicsContact.init()
         super.init(size: size)
         backgroundColor = UIColor.white
     }
@@ -71,6 +76,10 @@ final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
         }
 
         frameCounter += 1
+
+        if touched == true {
+            NSLog("still touching ... \(contactPoint.contactPoint) ")
+        }
 
     }
 
@@ -187,6 +196,11 @@ final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
             spriteNode.start(CGFloat(zPosition))
             spriteNode.setLook()
             spriteNode.isUserInteractionEnabled = true
+
+            if(spriteNode.currentUIImageLook != nil) {
+                setPhyicsBody(spriteNode: spriteNode, size: spriteNode.currentUIImageLook!.size)
+            } else { NSLog("Could not set Physicsbody because look = nil")}
+
             scheduler.registerSpriteNode(spriteNode)
 
             for script in scriptList {
@@ -321,36 +335,47 @@ final class Stage: SKScene, StageProtocol, SKPhysicsContactDelegate {
     }
 
     func setPhyicsBody(spriteNode: CBSpriteNode, size: CGSize) {
-
+        NSLog("setPhysicsbody in Stage")
         if spriteNode.catrobatSize < 100.0 {
             let resized = CGSize(width: size.width * CGFloat(spriteNode.catrobatSize / 100), height: size.height * CGFloat(spriteNode.catrobatSize / 100))
             spriteNode.physicsBody = SKPhysicsBody.init(rectangleOf: resized)
         } else {
             spriteNode.physicsBody = SKPhysicsBody.init(rectangleOf: size)
         }
+
+
         spriteNode.physicsBody?.collisionBitMask = 0
         spriteNode.physicsBody?.categoryBitMask = 1
         spriteNode.physicsBody?.contactTestBitMask = 1
-        spriteNode.physicsBody?.isDynamic = true
+    //    spriteNode.physicsBody?.isDynamic = false
         spriteNode.physicsBody?.affectedByGravity = false
-        spriteNode.isUserInteractionEnabled = false
+        //spriteNode.isUserInteractionEnabled = false
 
-        self.addChild(spriteNode)
+       // self.addChild(spriteNode)
 
-        self.scene?.physicsWorld.contactDelegate = self
+        self.physicsWorld.contactDelegate = self
+
+        NSLog("new Physicsbody: \(spriteNode.physicsBody)")
 
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("scene touches began!!")
+        NSLog("Stage touches began!!")
         if let touch = touches.first {
             print("\(touch)")
         }
         super.touchesBegan(touches, with: event)
     }
 
-    func didBeginContact(contact: SKPhysicsContact) {
-        NSLog("scene contact began!!")
+    func didBegin(_ contact: SKPhysicsContact) {
+        NSLog("Stage contact began!! \(contact.contactPoint)")
+        touched = true
+        contactPoint = contact
+    }
+
+    func didEnd(_ contact: SKPhysicsContact) {
+        NSLog("Stage contact ended!! \(contact.contactPoint)")
+        touched = false
     }
 
 }

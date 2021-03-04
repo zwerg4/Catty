@@ -21,7 +21,7 @@
  */
 
 @objc
-class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
+class CBSpriteNode: SKSpriteNode {
 
     // MARK: - Properties
     @objc var spriteObject: SpriteObject
@@ -68,7 +68,8 @@ class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
             self.currentLook = firstLook
             self.currentLook = firstLook
 
-            setPhyicsBody(size: texture.size())
+           // setPhyicsBody(size: texture.size())
+            setPhyicsBody(texture: texture)
         } else {
             super.init(texture: nil, color: color, size: CGSize.zero)
         }
@@ -154,7 +155,8 @@ class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
             self.yScale = yScale
         }
 
-        setPhyicsBody(size: texture.size())
+      //  setPhyicsBody(size: texture.size())
+        setPhyicsBody(texture: texture)
     }
 
     @objc func nextLook() -> Look? {
@@ -235,6 +237,7 @@ class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
 
     @objc func touchedWithTouch(_ touch: UITouch, atPosition position: CGPoint) -> Bool {
         guard let playerStage = (scene as? Stage) else { return false }
+
         let scheduler = playerStage.scheduler
 
         guard let imageLook = currentUIImageLook, scheduler.running else { return false }
@@ -260,7 +263,7 @@ class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
         return false
     }
 
-    func setPhyicsBody(size: CGSize) {
+    func setPhyicsBody(texture: SKTexture) {
         /*
         NSLog("setPhysicsbody for: \(self.currentLook?.fileName)")
         if catrobatSize < 100.0 {
@@ -280,25 +283,88 @@ class CBSpriteNode: SKSpriteNode, SKPhysicsContactDelegate {
        // self.stage.addChild(self)
         self.scene?.addChild(self)
         self.scene?.physicsWorld.contactDelegate = self.scene as! SKPhysicsContactDelegate */
+      //  let cropedImage = self.currentUIImageLook?.cropImageByAlpha()
+/*
+        self.physicsBody = SKPhysicsBody.init(texture: texture, alphaThreshold: 0.1, size: texture.size())
 
-        guard let playerStage = (scene as? Stage) else {
-            NSLog("MAYDAY")
-            return }
-
-        playerStage.setPhyicsBody(spriteNode: self, size: size)
+        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.categoryBitMask = 1
+        self.physicsBody?.contactTestBitMask = 1
+        //self.physicsBody?.isDynamic = false
+        self.physicsBody?.affectedByGravity = false */
 
     }
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NSLog("touches began!!")
-        if let touch = touches.first {
-            print("\(touch)")
+}
+
+//Swift 4 modifications for this gist: https://gist.github.com/krooked/9c4c81557fc85bc61e51c0b4f3301e6e
+
+extension UIImage {
+    func cropImageByAlpha() -> UIImage {
+        let cgImage = self.cgImage
+        let context = createARGBBitmapContextFromImage(inImage: cgImage!)
+        let height = cgImage!.height
+        let width = cgImage!.width
+
+        var rect : CGRect = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
+        context?.draw(cgImage!, in: rect)
+
+        let pixelData = self.cgImage!.dataProvider!.data
+        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+
+        var minX = width
+        var minY = height
+        var maxX: Int = 0
+        var maxY: Int = 0
+
+        //Filter through data and look for non-transparent pixels.
+        for y in 0..<height {
+            for x in 0..<width {
+                let pixelIndex = (width * y + x) * 4 /* 4 for A, R, G, B */
+
+                if data[Int(pixelIndex)] != 0 { //Alpha value is not zero pixel is not transparent.
+                    if x < minX {
+                        minX = x
+                    }
+                    if x > maxX {
+                        maxX = x
+                    }
+                    if y < minY {
+                        minY = y
+                    }
+                    if y > maxY {
+                        maxY = y
+                    }
+                }
+            }
         }
-        super.touchesBegan(touches, with: event)
+        rect = CGRect( x: CGFloat(minX), y: CGFloat(minY), width: CGFloat(maxX-minX), height: CGFloat(maxY-minY))
+        let imageScale : CGFloat = self.scale
+        let cgiImage = self.cgImage?.cropping(to: rect)
+        return UIImage(cgImage: cgiImage!, scale: imageScale, orientation: self.imageOrientation)
     }
 
-    func didBeginContact(contact: SKPhysicsContact) {
-        NSLog("contact began!!")
-    }
+    private func createARGBBitmapContextFromImage(inImage: CGImage) -> CGContext? {
 
+        let width = cgImage!.width
+        let height = cgImage!.height
+
+        let bitmapBytesPerRow = width * 4
+        let bitmapByteCount = bitmapBytesPerRow * height
+
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        if colorSpace == nil {
+            return nil
+        }
+
+        let bitmapData = malloc(bitmapByteCount)
+        if bitmapData == nil {
+            return nil
+        }
+
+        let context = CGContext (data: bitmapData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bitmapBytesPerRow,
+                                 space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)
+
+        return context
+    }
 }
