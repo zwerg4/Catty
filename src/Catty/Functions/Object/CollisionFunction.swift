@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2010-2020 The Catrobat Team
+ *  Copyright (C) 2010-2021 The Catrobat Team
  *  (http://developer.catrobat.org/credits)
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import UIKit
     static var isIdempotent = true
     static let position = 130
 
-    var spriteObject_: SpriteObject? = nil
+    var spriteObject_: SpriteObject?
 
     func tag() -> String {
         type(of: self).tag
@@ -50,7 +50,6 @@ import UIKit
         for obj in spriteObject.scene.objects() where obj.name == value && obj.spriteNode.catrobatTransparency == 100 {
             return 0.0
         }
-        
         if spriteObject.spriteNode.catrobatTransparency == 100 {
             return 0.0
         }
