@@ -265,41 +265,31 @@ class CBSpriteNode: SKSpriteNode {
 
     func setPhyicsBody(image: UIImage) {
 
+        var resizedImage = image.size
+        if catrobatSize < 100.0 {
+            resizedImage = CGSize(width: image.size.width * CGFloat(catrobatSize / 100), height: image.size.height * CGFloat(catrobatSize / 100))
+        }
+
         let entireImage = image.alpha(0.1)
 
         var physicsBodyList: [SKPhysicsBody] = []
-        for y in 0...4 {
-            for x in 0...4 {
-                var imageNew = image.cropOut(coodinate: CGPoint(x: (image.size.width / 5.0) * CGFloat(x),
-                                                                y: (image.size.height / 5) * CGFloat(y)),
-                                             size: CGSize(width: image.size.width / 5,
-                                                          height: image.size.height / 5))
-                imageNew = imageNew.overlapImage(image: entireImage, coordinate: CGPoint(x: (image.size.width / 5.0) * CGFloat(x), y: (image.size.height / 5) * CGFloat(y)))
-                let physicsbodyCrop = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: imageNew.size)
+        let amountParts = CGFloat(5.0)
+        var imageNew = image
+        for y in 0...Int(amountParts - 1) {
+            for x in 0...Int(amountParts - 1) {
+                imageNew = image.cropOut(coodinate: CGPoint(x: (image.size.width / amountParts) * CGFloat(x),
+                                                            y: (image.size.height / amountParts) * CGFloat(y)),
+                                             size: CGSize(width: image.size.width / amountParts,
+                                                          height: image.size.height / amountParts))
+                imageNew = imageNew.overlapImage(image: entireImage, coordinate: CGPoint(x: (image.size.width / amountParts) * CGFloat(x), y: (image.size.height / amountParts) * CGFloat(y)))
+                let physicsbodyCrop = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: resizedImage)
                 if isObjectNotNil(object: physicsbodyCrop) {
                     physicsBodyList.append(physicsbodyCrop)
                 }
             }
         }
 
-  /*      var leftImage = image.leftHalf
-        var rightImage = image.rightHalf
-
-        leftImage = leftImage?.overlapImage(image: entireImage, coordinate: CGPoint(x: 0, y: 0))
-        rightImage = rightImage?.overlapImage(image: entireImage, coordinate: CGPoint(x: entireImage.size.width / 2, y: 0))
-
-        let leftImageTexture = SKTexture(image: leftImage!)
-        let rightImageTexture = SKTexture(image: rightImage!)
-
-        let physicsBodyLeftImage = SKPhysicsBody.init(texture: SKTexture(image: leftImage!), alphaThreshold: 0.2, size: leftImage!.size)
-        let physicsBodyRightImage = SKPhysicsBody.init(texture: SKTexture(image: rightImage!), alphaThreshold: 0.2, size: rightImage!.size)
-
-        NSLog("setPhysicsbody: \(physicsBodyLeftImage)")
-        NSLog("setPhysicsbody: \(physicsBodyRightImage)") */
-
         let physicsBodyJoint = SKPhysicsBody.init(bodies: physicsBodyList)
-
-        NSLog("setPhysicsbodyJoint: \(physicsBodyJoint)")
 
         self.physicsBody = physicsBodyJoint
         self.physicsBody?.collisionBitMask = 0
@@ -307,37 +297,6 @@ class CBSpriteNode: SKSpriteNode {
         self.physicsBody?.contactTestBitMask = 1
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
-       // self.isUserInteractionEnabled = false
-
-        /*
-        NSLog("setPhysicsbody for: \(self.currentLook?.fileName)")
-        if catrobatSize < 100.0 {
-            let resized = CGSize(width: size.width * CGFloat(catrobatSize / 100), height: size.height * CGFloat(catrobatSize / 100))
-            self.physicsBody = SKPhysicsBody.init(rectangleOf: resized)
-        } else {
-            self.physicsBody = SKPhysicsBody.init(rectangleOf: size)
-        }
-        self.physicsBody?.collisionBitMask = 0
-        self.physicsBody?.categoryBitMask = 1
-        self.physicsBody?.contactTestBitMask = 1
-        self.physicsBody?.isDynamic = false
-        self.physicsBody?.affectedByGravity = false
-       // self.isUserInteractionEnabled = false
-       // guard let stage = self.scene. as? Stage else { return }
-        NSLog("after RETURN")
-       // self.stage.addChild(self)
-        self.scene?.addChild(self)
-        self.scene?.physicsWorld.contactDelegate = self.scene as! SKPhysicsContactDelegate */
-      //  let cropedImage = self.currentUIImageLook?.cropImageByAlpha()
-/*
-        self.physicsBody = SKPhysicsBody.init(texture: texture, alphaThreshold: 0.1, size: texture.size())
-
-        self.physicsBody?.collisionBitMask = 0
-        self.physicsBody?.categoryBitMask = 1
-        self.physicsBody?.contactTestBitMask = 1
-        //self.physicsBody?.isDynamic = false
-        self.physicsBody?.affectedByGravity = false */
-
     }
 
     func isObjectNotNil(object: AnyObject!) -> Bool {
@@ -346,7 +305,6 @@ class CBSpriteNode: SKSpriteNode {
         }
         return false
     }
-
 }
 
 extension UIImage {
@@ -356,40 +314,6 @@ extension UIImage {
                                  size: size))
         else { return self }
         return UIImage(cgImage: image, scale: 1, orientation: imageOrientation)
-    }
-
-    var topHalf: UIImage? {
-        guard let image = cgImage?
-            .cropping(to: CGRect(origin: .zero,
-                                 size: CGSize(width: size.width, height: size.height / 2 )))
-        else { return nil }
-        return UIImage(cgImage: image, scale: 1, orientation: imageOrientation)
-    }
-    var bottomHalf: UIImage? {
-        guard let image = cgImage?
-            .cropping(to: CGRect(origin: CGPoint(x: 0,
-                                                 y: size.height - (size.height / 2).rounded()),
-                                 size: CGSize(width: size.width,
-                                              height: size.height -
-                                                      (size.height / 2).rounded())))
-        else { return nil }
-        return UIImage(cgImage: image)
-    }
-    var leftHalf: UIImage? {
-        guard let image = cgImage?
-            .cropping(to: CGRect(origin: .zero,
-                                 size: CGSize(width: size.width / 2,
-                                              height: size.height)))
-        else { return nil }
-        return UIImage(cgImage: image)
-    }
-    var rightHalf: UIImage? {
-        guard let image = cgImage?
-            .cropping(to: CGRect(origin: CGPoint(x: size.width - (size.width / 2).rounded(), y: 0),
-                                 size: CGSize(width: size.width - (size.width / 2).rounded(),
-                                              height: size.height)))
-        else { return nil }
-        return UIImage(cgImage: image)
     }
 
     func alpha(_ value: CGFloat) -> UIImage {
