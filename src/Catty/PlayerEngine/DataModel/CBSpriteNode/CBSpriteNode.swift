@@ -69,7 +69,7 @@ class CBSpriteNode: SKSpriteNode {
             self.currentLook = firstLook
 
            // setPhyicsBody(size: texture.size())
-            setPhyicsBody(texture: texture)
+            setPhyicsBody(image: image)
         } else {
             super.init(texture: nil, color: color, size: CGSize.zero)
         }
@@ -156,7 +156,7 @@ class CBSpriteNode: SKSpriteNode {
         }
 
       //  setPhyicsBody(size: texture.size())
-        setPhyicsBody(texture: texture)
+        setPhyicsBody(image: self.currentUIImageLook!)
     }
 
     @objc func nextLook() -> Look? {
@@ -263,7 +263,52 @@ class CBSpriteNode: SKSpriteNode {
         return false
     }
 
-    func setPhyicsBody(texture: SKTexture) {
+    func setPhyicsBody(image: UIImage) {
+
+        let entireImage = image.alpha(0.1)
+
+        var physicsBodyList: [SKPhysicsBody] = []
+        for y in 0...4 {
+            for x in 0...4 {
+                var imageNew = image.cropOut(coodinate: CGPoint(x: (image.size.width / 5.0) * CGFloat(x),
+                                                                y: (image.size.height / 5) * CGFloat(y)),
+                                             size: CGSize(width: image.size.width / 5,
+                                                          height: image.size.height / 5))
+                imageNew = imageNew.overlapImage(image: entireImage, coordinate: CGPoint(x: (image.size.width / 5.0) * CGFloat(x), y: (image.size.height / 5) * CGFloat(y)))
+                let physicsbodyCrop = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: imageNew.size)
+                if isObjectNotNil(object: physicsbodyCrop) {
+                    physicsBodyList.append(physicsbodyCrop)
+                }
+            }
+        }
+
+  /*      var leftImage = image.leftHalf
+        var rightImage = image.rightHalf
+
+        leftImage = leftImage?.overlapImage(image: entireImage, coordinate: CGPoint(x: 0, y: 0))
+        rightImage = rightImage?.overlapImage(image: entireImage, coordinate: CGPoint(x: entireImage.size.width / 2, y: 0))
+
+        let leftImageTexture = SKTexture(image: leftImage!)
+        let rightImageTexture = SKTexture(image: rightImage!)
+
+        let physicsBodyLeftImage = SKPhysicsBody.init(texture: SKTexture(image: leftImage!), alphaThreshold: 0.2, size: leftImage!.size)
+        let physicsBodyRightImage = SKPhysicsBody.init(texture: SKTexture(image: rightImage!), alphaThreshold: 0.2, size: rightImage!.size)
+
+        NSLog("setPhysicsbody: \(physicsBodyLeftImage)")
+        NSLog("setPhysicsbody: \(physicsBodyRightImage)") */
+
+        let physicsBodyJoint = SKPhysicsBody.init(bodies: physicsBodyList)
+
+        NSLog("setPhysicsbodyJoint: \(physicsBodyJoint)")
+
+        self.physicsBody = physicsBodyJoint
+        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.categoryBitMask = 1
+        self.physicsBody?.contactTestBitMask = 1
+        self.physicsBody?.isDynamic = true
+        self.physicsBody?.affectedByGravity = false
+       // self.isUserInteractionEnabled = false
+
         /*
         NSLog("setPhysicsbody for: \(self.currentLook?.fileName)")
         if catrobatSize < 100.0 {
@@ -295,76 +340,73 @@ class CBSpriteNode: SKSpriteNode {
 
     }
 
-}
-
-//Swift 4 modifications for this gist: https://gist.github.com/krooked/9c4c81557fc85bc61e51c0b4f3301e6e
-
-extension UIImage {
-    func cropImageByAlpha() -> UIImage {
-        let cgImage = self.cgImage
-        let context = createARGBBitmapContextFromImage(inImage: cgImage!)
-        let height = cgImage!.height
-        let width = cgImage!.width
-
-        var rect : CGRect = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
-        context?.draw(cgImage!, in: rect)
-
-        let pixelData = self.cgImage!.dataProvider!.data
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-
-        var minX = width
-        var minY = height
-        var maxX: Int = 0
-        var maxY: Int = 0
-
-        //Filter through data and look for non-transparent pixels.
-        for y in 0..<height {
-            for x in 0..<width {
-                let pixelIndex = (width * y + x) * 4 /* 4 for A, R, G, B */
-
-                if data[Int(pixelIndex)] != 0 { //Alpha value is not zero pixel is not transparent.
-                    if x < minX {
-                        minX = x
-                    }
-                    if x > maxX {
-                        maxX = x
-                    }
-                    if y < minY {
-                        minY = y
-                    }
-                    if y > maxY {
-                        maxY = y
-                    }
-                }
-            }
+    func isObjectNotNil(object: AnyObject!) -> Bool {
+        if let _: AnyObject = object {
+            return true
         }
-        rect = CGRect( x: CGFloat(minX), y: CGFloat(minY), width: CGFloat(maxX-minX), height: CGFloat(maxY-minY))
-        let imageScale : CGFloat = self.scale
-        let cgiImage = self.cgImage?.cropping(to: rect)
-        return UIImage(cgImage: cgiImage!, scale: imageScale, orientation: self.imageOrientation)
+        return false
     }
 
-    private func createARGBBitmapContextFromImage(inImage: CGImage) -> CGContext? {
+}
 
-        let width = cgImage!.width
-        let height = cgImage!.height
+extension UIImage {
+    func cropOut(coodinate: CGPoint, size: CGSize) -> UIImage {
+        guard let image = cgImage?
+            .cropping(to: CGRect(origin: coodinate,
+                                 size: size))
+        else { return self }
+        return UIImage(cgImage: image, scale: 1, orientation: imageOrientation)
+    }
 
-        let bitmapBytesPerRow = width * 4
-        let bitmapByteCount = bitmapBytesPerRow * height
+    var topHalf: UIImage? {
+        guard let image = cgImage?
+            .cropping(to: CGRect(origin: .zero,
+                                 size: CGSize(width: size.width, height: size.height / 2 )))
+        else { return nil }
+        return UIImage(cgImage: image, scale: 1, orientation: imageOrientation)
+    }
+    var bottomHalf: UIImage? {
+        guard let image = cgImage?
+            .cropping(to: CGRect(origin: CGPoint(x: 0,
+                                                 y: size.height - (size.height / 2).rounded()),
+                                 size: CGSize(width: size.width,
+                                              height: size.height -
+                                                      (size.height / 2).rounded())))
+        else { return nil }
+        return UIImage(cgImage: image)
+    }
+    var leftHalf: UIImage? {
+        guard let image = cgImage?
+            .cropping(to: CGRect(origin: .zero,
+                                 size: CGSize(width: size.width / 2,
+                                              height: size.height)))
+        else { return nil }
+        return UIImage(cgImage: image)
+    }
+    var rightHalf: UIImage? {
+        guard let image = cgImage?
+            .cropping(to: CGRect(origin: CGPoint(x: size.width - (size.width / 2).rounded(), y: 0),
+                                 size: CGSize(width: size.width - (size.width / 2).rounded(),
+                                              height: size.height)))
+        else { return nil }
+        return UIImage(cgImage: image)
+    }
 
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        if colorSpace == nil {
-            return nil
-        }
+    func alpha(_ value: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
 
-        let bitmapData = malloc(bitmapByteCount)
-        if bitmapData == nil {
-            return nil
-        }
-
-        let context = CGContext (data: bitmapData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bitmapBytesPerRow,
-                                 space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)
-
-        return context
+    func overlapImage(image: UIImage, coordinate: CGPoint) -> UIImage {
+        let newSize = CGSize(width: image.size.width, height: image.size.height)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        self.draw(in: CGRect(x: coordinate.x, y: coordinate.y, width: self.size.width, height: self.size.height), blendMode: CGBlendMode.normal, alpha: 1.0)
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
     }
 }

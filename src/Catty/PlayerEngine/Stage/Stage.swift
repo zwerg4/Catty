@@ -197,9 +197,9 @@ final class Stage: SKScene, SKPhysicsContactDelegate, StageProtocol {
             spriteNode.setLook()
             spriteNode.isUserInteractionEnabled = true
 
-            if(spriteNode.currentUIImageLook != nil) {
-                setPhyicsBody(spriteNode: spriteNode, size: spriteNode.currentUIImageLook!.size)
-            } else { NSLog("Could not set Physicsbody because look = nil")}
+   //         if(spriteNode.currentUIImageLook != nil) {
+   //             setPhyicsBody(spriteNode: spriteNode, size: spriteNode.currentUIImageLook!.size)
+  //          } else { NSLog("Could not set Physicsbody because look = nil")}
 
             scheduler.registerSpriteNode(spriteNode)
 
@@ -353,7 +353,7 @@ final class Stage: SKScene, SKPhysicsContactDelegate, StageProtocol {
 
        // self.addChild(spriteNode)
 
-        self.physicsWorld.contactDelegate = self
+    //    self.physicsWorld.contactDelegate = self
 
         NSLog("new Physicsbody: \(spriteNode.physicsBody)")
 
