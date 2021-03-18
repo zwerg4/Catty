@@ -43,6 +43,8 @@ class CBSpriteNode: SKSpriteNode {
     @objc var ciBrightness = CGFloat(BrightnessSensor.defaultRawValue) // CoreImage specific brightness
     @objc var ciHueAdjust = CGFloat(ColorSensor.defaultRawValue) // CoreImage specific hue adjust
 
+    @objc static let amountPiecesDivisor = CGFloat(5.0)
+
     // MARK: Custom getters and setters
     @objc func setPositionForCropping(_ position: CGPoint) {
         self.position = position
@@ -68,8 +70,8 @@ class CBSpriteNode: SKSpriteNode {
             self.currentLook = firstLook
             self.currentLook = firstLook
 
-           // setPhyicsBody(size: texture.size())
             setPhyicsBody(image: image)
+
         } else {
             super.init(texture: nil, color: color, size: CGSize.zero)
         }
@@ -155,7 +157,6 @@ class CBSpriteNode: SKSpriteNode {
             self.yScale = yScale
         }
 
-      //  setPhyicsBody(size: texture.size())
         setPhyicsBody(image: self.currentUIImageLook!)
     }
 
@@ -273,16 +274,22 @@ class CBSpriteNode: SKSpriteNode {
         let entireImage = image.alpha(0.1)
 
         var physicsBodyList: [SKPhysicsBody] = []
-        let amountParts = CGFloat(5.0)  //Change this to change amount of parts to split x * x
-        var imageNew = image
-        for y in 0...Int(amountParts - 1) {
-            for x in 0...Int(amountParts - 1) {
-                imageNew = image.cropOut(coodinate: CGPoint(x: (image.size.width / amountParts) * CGFloat(x),
-                                                            y: (image.size.height / amountParts) * CGFloat(y)),
-                                             size: CGSize(width: image.size.width / amountParts,
-                                                          height: image.size.height / amountParts))
-                imageNew = imageNew.overlapImage(image: entireImage, coordinate: CGPoint(x: (image.size.width / amountParts) * CGFloat(x), y: (image.size.height / amountParts) * CGFloat(y)))
-                let physicsbodyCrop: SKPhysicsBody? = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: resizedImage)
+        var imagePiece = image
+        for y in 0...Int(CBSpriteNode.amountPiecesDivisor - 1) {
+            for x in 0...Int(CBSpriteNode.amountPiecesDivisor - 1) {
+                imagePiece = image.crop(rect: CGRect(x: (image.size.width / CBSpriteNode.amountPiecesDivisor) * CGFloat(x),
+                                                     y: (image.size.height / CBSpriteNode.amountPiecesDivisor) * CGFloat(y),
+                                                     width: image.size.width / CBSpriteNode.amountPiecesDivisor,
+                                                     height: image.size.height / CBSpriteNode.amountPiecesDivisor)) ?? image
+
+                imagePiece = imagePiece.overlapImage(image: entireImage,
+                                                     coordinate: CGPoint(x: (image.size.width / CBSpriteNode.amountPiecesDivisor)
+                                                                        * CGFloat(x),
+                                                                         y: (image.size.height / CBSpriteNode.amountPiecesDivisor)
+                                                                        * CGFloat(y)))
+                let physicsbodyCrop: SKPhysicsBody? = SKPhysicsBody.init(texture: SKTexture(image: imagePiece),
+                                                                         alphaThreshold: 0.2,
+                                                                         size: resizedImage)
 
                 guard physicsbodyCrop != nil else {
                     continue
@@ -299,33 +306,5 @@ class CBSpriteNode: SKSpriteNode {
         self.physicsBody?.contactTestBitMask = 1
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
-    }
-}
-
-extension UIImage {
-    func cropOut(coodinate: CGPoint, size: CGSize) -> UIImage {
-        guard let image = cgImage?
-            .cropping(to: CGRect(origin: coodinate,
-                                 size: size))
-        else { return self }
-        return UIImage(cgImage: image, scale: 1, orientation: imageOrientation)
-    }
-
-    func alpha(_ value: CGFloat) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext() ?? self
-        UIGraphicsEndImageContext()
-        return newImage
-    }
-
-    func overlapImage(image: UIImage, coordinate: CGPoint) -> UIImage {
-        let newSize = CGSize(width: image.size.width, height: image.size.height)
-        UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
-        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        self.draw(in: CGRect(x: coordinate.x, y: coordinate.y, width: self.size.width, height: self.size.height), blendMode: CGBlendMode.normal, alpha: 1.0)
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-        UIGraphicsEndImageContext()
-        return newImage
     }
 }

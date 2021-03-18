@@ -31,8 +31,6 @@ import UIKit
     static var isIdempotent = true
     static let position = 130
 
-    var spriteObject_: SpriteObject?
-
     func tag() -> String {
         type(of: self).tag
     }
@@ -54,8 +52,6 @@ import UIKit
             return 0.0
         }
 
-        spriteObject_ = spriteObject
-
         if let unwrapped_allContactedBodies = spriteObject.spriteNode.physicsBody?.allContactedBodies() {
             if spriteObject.spriteNode.physicsBody?.allContactedBodies().count ?? 0 > 0 {
                 return checkForContact(contactedBodies: unwrapped_allContactedBodies, parameter: value)
@@ -75,7 +71,6 @@ import UIKit
         for index in 0...(contactedBodies.count - 1) where contactedBodies[index].node?.name == parameter {
             guard contactedBodies[index].node != nil
             else { return 0.0 }
-    //        NSLog("Physicsbody 2 \(contactedBodies[index])")
             return 1.0
         }
         return 0.0
