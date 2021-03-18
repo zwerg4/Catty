@@ -273,7 +273,7 @@ class CBSpriteNode: SKSpriteNode {
         let entireImage = image.alpha(0.1)
 
         var physicsBodyList: [SKPhysicsBody] = []
-        let amountParts = CGFloat(5.0)
+        let amountParts = CGFloat(5.0)  //Change this to change amount of parts to split x * x
         var imageNew = image
         for y in 0...Int(amountParts - 1) {
             for x in 0...Int(amountParts - 1) {
@@ -282,10 +282,12 @@ class CBSpriteNode: SKSpriteNode {
                                              size: CGSize(width: image.size.width / amountParts,
                                                           height: image.size.height / amountParts))
                 imageNew = imageNew.overlapImage(image: entireImage, coordinate: CGPoint(x: (image.size.width / amountParts) * CGFloat(x), y: (image.size.height / amountParts) * CGFloat(y)))
-                let physicsbodyCrop = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: resizedImage)
-                if isObjectNotNil(object: physicsbodyCrop) {
-                    physicsBodyList.append(physicsbodyCrop)
+                let physicsbodyCrop: SKPhysicsBody? = SKPhysicsBody.init(texture: SKTexture(image: imageNew), alphaThreshold: 0.2, size: resizedImage)
+
+                guard physicsbodyCrop != nil else {
+                    continue
                 }
+                physicsBodyList.append(physicsbodyCrop!)
             }
         }
 
@@ -297,13 +299,6 @@ class CBSpriteNode: SKSpriteNode {
         self.physicsBody?.contactTestBitMask = 1
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
-    }
-
-    func isObjectNotNil(object: AnyObject!) -> Bool {
-        if let _: AnyObject = object {
-            return true
-        }
-        return false
     }
 }
 
@@ -319,9 +314,9 @@ extension UIImage {
     func alpha(_ value: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        let newImage = UIGraphicsGetImageFromCurrentImageContext() ?? self
         UIGraphicsEndImageContext()
-        return newImage!
+        return newImage
     }
 
     func overlapImage(image: UIImage, coordinate: CGPoint) -> UIImage {
@@ -329,7 +324,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
         image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
         self.draw(in: CGRect(x: coordinate.x, y: coordinate.y, width: self.size.width, height: self.size.height), blendMode: CGBlendMode.normal, alpha: 1.0)
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
         UIGraphicsEndImageContext()
         return newImage
     }
