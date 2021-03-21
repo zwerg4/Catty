@@ -25,10 +25,10 @@ import UIKit
 @objc class CollisionFunction: NSObject, SingleParameterDoubleObjectFunction {
 
     @objc static var tag = "COLLISION_FORMULA"
-    static var name = kUIFEObjectActorObjectTouch
-    static var defaultValue = 0.0
-    static var requiredResource = ResourceType.noResources
-    static var isIdempotent = true
+    static let name = kUIFEObjectActorObjectTouch
+    static let defaultValue = 0.0
+    static let requiredResource = ResourceType.physicsBody
+    static let isIdempotent = true
     static let position = 130
 
     func tag() -> String {
@@ -51,6 +51,11 @@ import UIKit
         if spriteObject.spriteNode.catrobatTransparency == 100 {
             return 0.0
         }
+
+  //      if spriteObject.spriteNode.physicsBody == nil {
+  //          guard let image = spriteObject.spriteNode.currentUIImageLook else { return 0.0 }
+  //          spriteObject.spriteNode.setPhyicsBody(image: image)
+  //      }
 
         if let unwrapped_allContactedBodies = spriteObject.spriteNode.physicsBody?.allContactedBodies() {
             if spriteObject.spriteNode.physicsBody?.allContactedBodies().count ?? 0 > 0 {

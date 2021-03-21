@@ -35,6 +35,7 @@ import CoreMotion
     let touchManager: TouchManagerProtocol
     let bluetoothService: BluetoothService
     let formulaCache: FormulaCache
+    let physicsBodyManager: PhysicsBodyManager
 
     @objc(initWithStageSize: andLandscapeMode:)
     convenience init(stageSize: CGSize, landscapeMode: Bool) {
@@ -59,6 +60,8 @@ import CoreMotion
             FormulaManager.buildFunctionManager(touchManager: touchManager,
                                                 bluetoothService: bluetoothService)
 
+        let physicsBodyManager = PhysicsBodyManager()
+
         let operatorManager = FormulaManager.buildOperatorManager()
 
         self.init(sensorManager: sensorManager,
@@ -69,7 +72,8 @@ import CoreMotion
                   faceDetectionManager: faceDetectionManager,
                   audioManager: audioManager,
                   touchManager: touchManager,
-                  bluetoothService: bluetoothService)
+                  bluetoothService: bluetoothService,
+                  physicsBodyManager: physicsBodyManager )
     }
 
     convenience init(sensorManager: SensorManagerProtocol, functionManager: FunctionManagerProtocol, operatorManager: OperatorManagerProtocol) {
@@ -81,7 +85,8 @@ import CoreMotion
                   faceDetectionManager: FaceDetectionManager(),
                   audioManager: AudioManager(),
                   touchManager: TouchManager(),
-                  bluetoothService: BluetoothService.sharedInstance())
+                  bluetoothService: BluetoothService.sharedInstance(),
+                  physicsBodyManager: PhysicsBodyManager())
     }
 
     init(sensorManager: SensorManagerProtocol,
@@ -92,7 +97,8 @@ import CoreMotion
          faceDetectionManager: FaceDetectionManagerProtocol,
          audioManager: AudioManagerProtocol,
          touchManager: TouchManagerProtocol,
-         bluetoothService: BluetoothService) {
+         bluetoothService: BluetoothService,
+         physicsBodyManager: PhysicsBodyManager ) {
 
         self.sensorManager = sensorManager
         self.functionManager = functionManager
@@ -104,6 +110,8 @@ import CoreMotion
         self.audioManager = audioManager
         self.touchManager = touchManager
         self.bluetoothService = bluetoothService
+
+        self.physicsBodyManager = physicsBodyManager
 
         self.formulaCache = FormulaCache()
     }

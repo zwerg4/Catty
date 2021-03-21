@@ -55,6 +55,9 @@ extension FormulaManager {
         if requiredResources & ResourceType.loudness.rawValue > 0 && !audioManager.loudnessAvailable() {
             unavailableResource |= ResourceType.loudness.rawValue
         }
+        if requiredResources & ResourceType.physicsBody.rawValue > 0 && !physicsBodyManager.available() {
+            unavailableResource |= ResourceType.physicsBody.rawValue
+        }
 
         return unavailableResource
     }
@@ -100,7 +103,11 @@ extension FormulaManager {
         if ((requiredResources & ResourceType.loudness.rawValue) > 0) && (unavailableResource & ResourceType.loudness.rawValue) == 0 {
             audioManager.startLoudnessRecorder()
         }
-
+        NSLog("requiredResources: \(requiredResources) rawValue \(ResourceType.physicsBody.rawValue) unavailableResource: \(unavailableResource)")
+        if ((requiredResources & ResourceType.physicsBody.rawValue) > 0) && (unavailableResource & ResourceType.physicsBody.rawValue) == 0 {
+            guard let stage = stage else { return }
+            physicsBodyManager.start(stage: stage)
+        }
         if startTrackingTouches {
             guard let stage = stage else { return }
             touchManager.startTrackingTouches(for: stage)
