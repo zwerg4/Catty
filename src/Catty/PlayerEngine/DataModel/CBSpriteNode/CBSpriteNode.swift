@@ -322,8 +322,6 @@ class CBSpriteNode: SKSpriteNode {
 
         self.addChild(superNode)
 
-        NSLog("children: \(self.children.count)")
-
         let end = NSDate()
         print("Executed in " + String(end.timeIntervalSince(start as Date)))
     }

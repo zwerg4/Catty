@@ -130,6 +130,17 @@
           <soundList/>
           <userBricks/>
         </object>
+        <object type="SingleSprite" name="obj3">
+          <lookList>
+            <look name="unused-look">
+              <fileName>unused-look.png</fileName>
+            </look>
+          </lookList>
+          <nfcTagList/>
+          <scriptList/>
+          <soundList/>
+          <userBricks/>
+        </object>
       </objectList>
       <data>
         <objectListOfList>
