@@ -27,6 +27,8 @@ class CBSpriteNode: SKSpriteNode {
     @objc var spriteObject: SpriteObject
     @objc var currentLook: Look? {
         didSet {
+            setPhyicsBody()
+
             guard let stage = self.scene as? StageProtocol else { return }
             if !self.spriteObject.isBackground() { return }
             stage.notifyBackgroundChange()
@@ -43,7 +45,7 @@ class CBSpriteNode: SKSpriteNode {
     @objc var ciBrightness = CGFloat(BrightnessSensor.defaultRawValue) // CoreImage specific brightness
     @objc var ciHueAdjust = CGFloat(ColorSensor.defaultRawValue) // CoreImage specific hue adjust
 
-    @objc static let amountPiecesDivisor = CGFloat(5.0)
+    @objc static var physicsSubnodesPerDimension = 2
 
     // MARK: Custom getters and setters
     @objc func setPositionForCropping(_ position: CGPoint) {
@@ -68,9 +70,6 @@ class CBSpriteNode: SKSpriteNode {
             let textureSize = texture.size()
             super.init(texture: texture, color: color, size: textureSize)
             self.currentLook = firstLook
-            self.currentLook = firstLook
-
-            setPhyicsBody(image: image)
 
         } else {
             super.init(texture: nil, color: color, size: CGSize.zero)
@@ -156,8 +155,6 @@ class CBSpriteNode: SKSpriteNode {
         if yScale != defaultSize {
             self.yScale = yScale
         }
-
-        setPhyicsBody(image: self.currentUIImageLook!)
     }
 
     @objc func nextLook() -> Look? {
@@ -264,47 +261,75 @@ class CBSpriteNode: SKSpriteNode {
         return false
     }
 
-    func setPhyicsBody(image: UIImage) {
+    private func setPhyicsBody() {
+        guard let objectName = self.spriteObject.name, isPhysicsObject() else { return }
 
-        var resizedImage = image.size
-        if catrobatSize < 100.0 {
-            resizedImage = CGSize(width: image.size.width * CGFloat(catrobatSize / 100), height: image.size.height * CGFloat(catrobatSize / 100))
+        self.enumerateChildNodes(withName: SpriteKitDefines.physicsNodeName) { node, _ in
+            node.removeFromParent()
         }
 
-        let entireImage = image.alpha(0.1)
+        let start = NSDate()
 
-        var physicsBodyList: [SKPhysicsBody] = []
-        var imagePiece = image
-        for y in 0...Int(CBSpriteNode.amountPiecesDivisor - 1) {
-            for x in 0...Int(CBSpriteNode.amountPiecesDivisor - 1) {
-                imagePiece = image.crop(rect: CGRect(x: (image.size.width / CBSpriteNode.amountPiecesDivisor) * CGFloat(x),
-                                                     y: (image.size.height / CBSpriteNode.amountPiecesDivisor) * CGFloat(y),
-                                                     width: image.size.width / CBSpriteNode.amountPiecesDivisor,
-                                                     height: image.size.height / CBSpriteNode.amountPiecesDivisor)) ?? image
+        let originalTexture = self.texture!
 
-                imagePiece = imagePiece.overlapImage(image: entireImage,
-                                                     coordinate: CGPoint(x: (image.size.width / CBSpriteNode.amountPiecesDivisor)
-                                                                        * CGFloat(x),
-                                                                         y: (image.size.height / CBSpriteNode.amountPiecesDivisor)
-                                                                        * CGFloat(y)))
-                let physicsbodyCrop: SKPhysicsBody? = SKPhysicsBody.init(texture: SKTexture(image: imagePiece),
-                                                                         alphaThreshold: 0.2,
-                                                                         size: resizedImage)
+        let size = originalTexture.size()
 
-                guard physicsbodyCrop != nil else {
-                    continue
-                }
-                physicsBodyList.append(physicsbodyCrop!)
+        CBSpriteNode.physicsSubnodesPerDimension = Int((size.height > size.width ?
+                                                            size.height / CGFloat(SpriteKitDefines.physicsSubnodeSize) :
+                                                            size.width / CGFloat(SpriteKitDefines.physicsSubnodeSize)
+                                                            ).rounded(.up))
+
+        let leftCornerX = (-size.width / 2)
+        let bottomCornerY = (-size.height / 2)
+        let childNodeWidth = (size.width / CGFloat(CBSpriteNode.physicsSubnodesPerDimension))
+        let childNodeHeight = (size.height / CGFloat(CBSpriteNode.physicsSubnodesPerDimension))
+        let childNodeSize = CGSize(width: childNodeWidth, height: childNodeHeight)
+        let childNodeHeightRelative = 1.0 / CGFloat(CBSpriteNode.physicsSubnodesPerDimension)
+        let childNodeWidthRelative = 1.0 / CGFloat(CBSpriteNode.physicsSubnodesPerDimension)
+
+        let superNode = SKSpriteNode(color: .clear, size: size)
+        superNode.name = SpriteKitDefines.physicsNodeName
+
+        for y in 0..<CBSpriteNode.physicsSubnodesPerDimension {
+            for x in 0..<CBSpriteNode.physicsSubnodesPerDimension {
+                let dX = childNodeWidth * CGFloat(x)
+                let dY = childNodeHeight * CGFloat(y)
+
+                let dXRelative = childNodeWidthRelative * CGFloat(x)
+                let dYRelative = childNodeHeightRelative * CGFloat(y)
+
+                let rect = CGRect(x: dXRelative, y: dYRelative, width: childNodeWidthRelative, height: childNodeHeightRelative)
+
+                let texture = SKTexture(rect: rect, in: originalTexture)
+
+                let physicsBodyJoint: SKPhysicsBody? = SKPhysicsBody(texture: texture, size: childNodeSize)
+                guard physicsBodyJoint != nil else { continue }
+
+                let node = SKSpriteNode(color: .clear, size: childNodeSize)
+                node.name = objectName
+                node.position.x = leftCornerX + childNodeWidth / 2 + dX
+                node.position.y = bottomCornerY + childNodeHeight / 2 + dY
+
+                node.physicsBody = physicsBodyJoint
+                node.physicsBody?.collisionBitMask = 0
+                node.physicsBody?.categoryBitMask = 1
+                node.physicsBody?.contactTestBitMask = 1
+                node.physicsBody?.isDynamic = true
+                node.physicsBody?.affectedByGravity = false
+                superNode.addChild(node)
             }
         }
 
-        let physicsBodyJoint = SKPhysicsBody.init(bodies: physicsBodyList)
+        self.addChild(superNode)
 
-        self.physicsBody = physicsBodyJoint
-        self.physicsBody?.collisionBitMask = 0
-        self.physicsBody?.categoryBitMask = 1
-        self.physicsBody?.contactTestBitMask = 1
-        self.physicsBody?.isDynamic = true
-        self.physicsBody?.affectedByGravity = false
+        NSLog("children: \(self.children.count)")
+
+        let end = NSDate()
+        print("Executed in " + String(end.timeIntervalSince(start as Date)))
+    }
+
+    private func isPhysicsObject() -> Bool {
+        guard let objectName = self.spriteObject.name else { return false }
+        return self.spriteObject.scene.project?.physicsObjectNames.contains(objectName) ?? false
     }
 }

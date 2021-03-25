@@ -52,28 +52,31 @@ import UIKit
             return 0.0
         }
 
-        if let unwrapped_allContactedBodies = spriteObject.spriteNode.physicsBody?.allContactedBodies() {
-            if spriteObject.spriteNode.physicsBody?.allContactedBodies().count ?? 0 > 0 {
-                return checkForContact(contactedBodies: unwrapped_allContactedBodies, parameter: value)
-            } else {
-                return 0.0
+        guard let physicsNode = spriteObject.spriteNode.childNode(withName: SpriteKitDefines.physicsNodeName) else { return 0.0 }
+
+        for child in physicsNode.children {
+            if let unwrapped_allContactedBodies = child.physicsBody?.allContactedBodies() {
+                if child.physicsBody?.allContactedBodies().count ?? 0 > 0 {
+                    if checkForContact(contactedBodies: unwrapped_allContactedBodies, parameter: value) {
+                        return 1.0
+                    }
+                }
             }
-        } else {
-            return 0.0
         }
+
+        return 0.0
     }
 
     func formulaEditorSections() -> [FormulaEditorSection] {
         [.object(position: (type(of: self).position), subsection: .motion)]
     }
 
-    func checkForContact(contactedBodies: [SKPhysicsBody], parameter: String) -> Double {
+    func checkForContact(contactedBodies: [SKPhysicsBody], parameter: String) -> Bool {
         for index in 0...(contactedBodies.count - 1) where contactedBodies[index].node?.name == parameter {
-            guard contactedBodies[index].node != nil
-            else { return 0.0 }
-            return 1.0
+            guard contactedBodies[index].node != nil else { return false }
+            return true
         }
-        return 0.0
+        return false
     }
 
     @objc(xmlElementForFormula: withContext:)
@@ -90,13 +93,18 @@ import UIKit
     }
 
     @objc(parseFromElement: withContext:)
-    static func parseFromElement(_ xmlElement: GDataXMLElement, context: CBXMLSerializerContext) -> FormulaElement? {
-        let valueElement = xmlElement.child(withElementName: "value")?.stringValue()
+    static func parseFromElement(_ xmlElement: GDataXMLElement, context: CBXMLParserContext) -> FormulaElement? {
+        let nameOfObject = xmlElement.child(withElementName: "value")?.stringValue()
         let formulaElement = FormulaElement(elementType: .FUNCTION, value: self.tag)
-        let leftChild = FormulaElement(elementType: .STRING, value: valueElement)
+        let leftChild = FormulaElement(elementType: .STRING, value: nameOfObject)
 
         formulaElement?.leftChild = leftChild
         leftChild?.parent = formulaElement
+
+        if let nameOfObject = nameOfObject {
+            context.physicsObjectNames.add(nameOfObject)
+            context.physicsObjectNames.add(context.spriteObject.name as Any)
+        }
 
         return formulaElement
     }
