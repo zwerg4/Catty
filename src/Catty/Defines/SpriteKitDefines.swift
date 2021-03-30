@@ -33,7 +33,7 @@ class SpriteKitDefines: NSObject {
     static let penShapeNodeName = "penShapeNode"
     static let stampedSpriteNodeName = "stampedSpriteNode"
     static let physicsNodeName = "physicsNodeName"
-    static let physicsSubnodeSize = 50
+    static let physicsSubnodeSize = 100
 
     static let defaultValueShowVariable = "0"
 

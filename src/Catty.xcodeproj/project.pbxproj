@@ -1747,6 +1747,7 @@
 		E50579C425B0BC68003FAEE5 /* CollisionFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5C983D825792A8B00AC36C3 /* CollisionFunction.swift */; };
 		E50579C625B1B39F003FAEE5 /* CollisionFunctionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50579C525B1B39D003FAEE5 /* CollisionFunctionTest.swift */; };
 		E5103DEE25CAE67300A32DF8 /* StagePresenterSideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5103DED25CAE67300A32DF8 /* StagePresenterSideMenuView.swift */; };
+		E55F4287261335360005DB5A /* CBSpriteNodePhysicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55F4286261335360005DB5A /* CBSpriteNodePhysicsTests.swift */; };
 		E564EBE1255D60F5001F0CD0 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E564EBE0255D60F4001F0CD0 /* PlayButton.swift */; };
 		E577F0462563C5A400368C18 /* BrickCategoryOverviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E577F0452563C5A400368C18 /* BrickCategoryOverviewController.swift */; };
 		E577F04A2563E8F200368C18 /* BrickCategoryOverviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E577F0492563E8F200368C18 /* BrickCategoryOverviewCollectionViewCell.swift */; };
@@ -4192,6 +4193,7 @@
 		E50579C525B1B39D003FAEE5 /* CollisionFunctionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionFunctionTest.swift; sourceTree = "<group>"; };
 		E5103DED25CAE67300A32DF8 /* StagePresenterSideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagePresenterSideMenuView.swift; sourceTree = "<group>"; };
 		E5505707FE2839B02A26E338 /* en-AU */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "en-AU"; path = "en-AU.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		E55F4286261335360005DB5A /* CBSpriteNodePhysicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBSpriteNodePhysicsTests.swift; sourceTree = "<group>"; };
 		E564EBE0255D60F4001F0CD0 /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		E57396A397CC08132F593B32 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E577F0452563C5A400368C18 /* BrickCategoryOverviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrickCategoryOverviewController.swift; sourceTree = "<group>"; };
@@ -9566,6 +9568,7 @@
 				D30ECD192440963100FAD17D /* Frontend */,
 				9E8F729B22E12820005CDABE /* AudioEngine */,
 				4C099F6D1C282B3C00E190CA /* CBBackendTests.swift */,
+				E55F4286261335360005DB5A /* CBSpriteNodePhysicsTests.swift */,
 				4C2732A81CE4F30F00CA61AC /* CBSpriteNodeTests.swift */,
 				4CE1D434213E5D110014DAF9 /* Formula */,
 				4C6FE139212D2D2E0067B7D5 /* Functions */,
@@ -11943,6 +11946,7 @@
 				4C7054E025DE457900B265DC /* BrickCellFormulaDataTests.swift in Sources */,
 				4C3B151B23F07C7800527D4A /* ErrorMock.swift in Sources */,
 				4CC50A53213AE386004BC914 /* FormulaManagerIdempotenceTests.swift in Sources */,
+				E55F4287261335360005DB5A /* CBSpriteNodePhysicsTests.swift in Sources */,
 				4C822666213FA7A400F3D750 /* LongitudeSensorTest.swift in Sources */,
 				4C2CBB4625A5AA8400C1C143 /* XMLParserHeaderTests093.swift in Sources */,
 				4C822665213FA7A400F3D750 /* AltitudeSensorTest.swift in Sources */,
