@@ -133,6 +133,28 @@ final class CollisionFunctionTests: XMLAbstractTest {
         stage.stopProject()
     }
 
+    func testParseFromElementAndCheckPhysicsObjectNames() {
+        let objectNameA = "objectNameA"
+        let objectNameB = "objectNameB"
+
+        let context = CBXMLParserContext(languageVersion: 0.992, andRootElement: nil)
+
+        XCTAssertEqual(0, context!.physicsObjectNames.count)
+
+        context?.spriteObject = SpriteObjectMock()
+        context?.spriteObject.name = objectNameA
+
+        let xmlElement = GDataXMLElement.element(withName: CollisionFunction.tag)
+        xmlElement?.addChild(GDataXMLElement.element(withName: "value", stringValue: objectNameB))
+
+        let formulaElement = CollisionFunction.parseFromElement(xmlElement!, context: context!)
+
+        XCTAssertNotNil(formulaElement)
+        XCTAssertEqual(2, context!.physicsObjectNames.count)
+        XCTAssertTrue(context!.physicsObjectNames.contains(objectNameA))
+        XCTAssertTrue(context!.physicsObjectNames.contains(objectNameB))
+    }
+
     private func createStage(project: Project) -> Stage {
         let stageBuilder = StageBuilder(project: project)
             .withFormulaManager(formulaManager: FormulaManager(stageSize: stageSize, landscapeMode: false))
