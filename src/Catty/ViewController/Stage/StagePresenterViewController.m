@@ -73,9 +73,6 @@
     #endif
     
     bool showPhysics = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Show physics body"] intValue];
-    NSLog(@"show physics: %d", showPhysics);
-    NSLog(@"show physics2: %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"Show physics body"]);
-    
     if(showPhysics == 1 && DEBUG == 1)
     {
         _skView.showsPhysics = YES;
