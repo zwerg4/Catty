@@ -28,22 +28,4 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return croppedImage
     }
-
-    func alpha(_ value: CGFloat) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext() ?? self
-        UIGraphicsEndImageContext()
-        return newImage
-    }
-
-    func overlapImage(image: UIImage, coordinate: CGPoint) -> UIImage {
-        let newSize = CGSize(width: image.size.width, height: image.size.height)
-        UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
-        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        self.draw(in: CGRect(x: coordinate.x, y: coordinate.y, width: self.size.width, height: self.size.height), blendMode: CGBlendMode.normal, alpha: 1.0)
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? image
-        UIGraphicsEndImageContext()
-        return newImage
-    }
 }
