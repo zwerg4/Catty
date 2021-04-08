@@ -31,12 +31,23 @@ import UIKit
     static var isIdempotent = true
     static let position = 130
 
+    var parameter = ["Green"]
+
     func tag() -> String {
         type(of: self).tag
     }
 
     func firstParameter() -> FunctionParameter {
-        .string(defaultValue: "Green")
+        var returnValue = "Green"
+        if parameter.isNotEmpty {
+            returnValue = parameter.first! //.string(defaultValue: parameter.first)
+            parameter.remove(at: 0)
+        }
+        return .string(defaultValue: returnValue)
+    }
+
+    func addParameter(param: String) {
+        parameter += param
     }
 
     func value(parameter: AnyObject?, spriteObject: SpriteObject) -> Double {
@@ -68,8 +79,19 @@ import UIKit
     }
 
     func formulaEditorSections() -> [FormulaEditorSection] {
-        [.object(position: (type(of: self).position), subsection: .motion)]
+        return [.object(position: (type(of: self).position), subsection: .touchesActorOrObject)]
     }
+
+    /*
+    func formulaEditorSections(spriteObject: SpriteObject) -> [FormulaEditorSection] {
+        guard let physicObjects = spriteObject.scene.project?.physicsObjectNames.count else { return [] }
+        var FormulaEditorSectionList = [FormulaEditorSection]()
+        for i in 0...physicObjects {
+            FormulaEditorSectionList += .object(position: (type(of: self).position + (i * 10)), subsection: .touchesActorOrObject)
+        }
+
+        return FormulaEditorSectionList
+    }*/
 
     func checkForContact(contactedBodies: [SKPhysicsBody], parameter: String) -> Bool {
         for index in 0...(contactedBodies.count - 1) where contactedBodies[index].node?.name == parameter {
