@@ -31,23 +31,18 @@ import UIKit
     static var isIdempotent = true
     static let position = 130
 
-    var parameter = ["Green"]
+    var parameter = "Green"
 
     func tag() -> String {
         type(of: self).tag
     }
 
     func firstParameter() -> FunctionParameter {
-        var returnValue = "Green"
-        if parameter.isNotEmpty {
-            returnValue = parameter.first! //.string(defaultValue: parameter.first)
-            parameter.remove(at: 0)
-        }
-        return .string(defaultValue: returnValue)
+        .string(defaultValue: parameter)
     }
 
     func addParameter(param: String) {
-        parameter += param
+        parameter = param
     }
 
     func value(parameter: AnyObject?, spriteObject: SpriteObject) -> Double {
