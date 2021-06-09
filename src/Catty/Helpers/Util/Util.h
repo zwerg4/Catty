@@ -65,6 +65,14 @@ if (__functor) __functor(__VA_ARGS__);  \
                                   andTextField:(FormulaEditorTextView* _Nullable)textView
                                    initialText:(NSString* _Nullable)initialText;
 
++ (void)askUserForObjectPickerAndPerforAction:(SEL _Nullable)action
+                                        target:(id _Nullable)target
+                                   promptTitle:(NSString* _Nullable)title
+                                 promptMessage:(NSString* _Nullable)message
+                                        isList:(BOOL)isList
+                               andTextField:(FormulaEditorTextView* _Nullable)textView
+                                  initialText:(NSString* _Nullable)initialText;
+
 + (CATransition* _Nonnull)getPushCATransition;
 
 + (ProjectLoadingInfo* _Nonnull)lastUsedProjectLoadingInfo;

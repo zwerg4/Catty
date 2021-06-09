@@ -1762,6 +1762,7 @@
 		E579F118253DCC65009107C8 /* ThinkForBubbleBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E579F117253DCC65009107C8 /* ThinkForBubbleBrickTests.swift */; };
 		E579F11A253DCD90009107C8 /* ChangeXByNBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E579F119253DCD90009107C8 /* ChangeXByNBrickTests.swift */; };
 		E579F11C253DCE2C009107C8 /* ChangeYByNBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E579F11B253DCE2C009107C8 /* ChangeYByNBrickTests.swift */; };
+		E57AEE6A2670155800E27A4E /* PickerAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57AEE692670155700E27A4E /* PickerAlertController.swift */; };
 		E57E6D85254040B400E775DF /* ChangeVolumeByNBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57E6D84254040B400E775DF /* ChangeVolumeByNBrickTests.swift */; };
 		E57E6D872540414700E775DF /* SetVolumeToBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57E6D862540414700E775DF /* SetVolumeToBrickTests.swift */; };
 		E57E6D89254041BE00E775DF /* SpeakAndWaitBrickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57E6D88254041BE00E775DF /* SpeakAndWaitBrickTests.swift */; };
@@ -4210,6 +4211,7 @@
 		E579F117253DCC65009107C8 /* ThinkForBubbleBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkForBubbleBrickTests.swift; sourceTree = "<group>"; };
 		E579F119253DCD90009107C8 /* ChangeXByNBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeXByNBrickTests.swift; sourceTree = "<group>"; };
 		E579F11B253DCE2C009107C8 /* ChangeYByNBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeYByNBrickTests.swift; sourceTree = "<group>"; };
+		E57AEE692670155700E27A4E /* PickerAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerAlertController.swift; sourceTree = "<group>"; };
 		E57E6D84254040B400E775DF /* ChangeVolumeByNBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeVolumeByNBrickTests.swift; sourceTree = "<group>"; };
 		E57E6D862540414700E775DF /* SetVolumeToBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetVolumeToBrickTests.swift; sourceTree = "<group>"; };
 		E57E6D88254041BE00E775DF /* SpeakAndWaitBrickTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakAndWaitBrickTests.swift; sourceTree = "<group>"; };
@@ -7556,6 +7558,7 @@
 				91FC8E53F7F6FEA7225F910E /* BaseAlertController.swift */,
 				91FC8B8C0B21945B560F7272 /* AlertController.swift */,
 				4CE9ADA41EEB2DAF00F5766B /* TextFieldAlertController.swift */,
+				E57AEE692670155700E27A4E /* PickerAlertController.swift */,
 			);
 			path = AlertController;
 			sourceTree = "<group>";
@@ -12694,6 +12697,7 @@
 				9276B7051C9E8F6C008BC594 /* SoundCache.m in Sources */,
 				C6A06BEC1EC8CA4C0000C656 /* AlertController.swift in Sources */,
 				92FF31021A24DCAA00093DA7 /* BroadcastScript.m in Sources */,
+				E57AEE6A2670155800E27A4E /* PickerAlertController.swift in Sources */,
 				4C994E0A207A3D4100C415FD /* Sensor.swift in Sources */,
 				AA74F00D1BC05B5F00D1E954 /* SpeakBrick.m in Sources */,
 				4C0F9F1C204ADB5900E71B2D /* ChooseCameraBrick+Instruction.swift in Sources */,

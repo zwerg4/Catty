@@ -22,6 +22,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FormulaEditorViewController.h"
+#import "iOSCombobox.h"
 
 @interface FormulaEditorTextView : UITextView <UITextViewDelegate,UIGestureRecognizerDelegate>
 

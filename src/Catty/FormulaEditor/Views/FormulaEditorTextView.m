@@ -140,7 +140,7 @@
     int endIndex = [self.formulaEditorViewController.internFormula getExternSelectionEndIndex];
     
     [self highlightSelection:cursorPostionIndex start:startIndex end:endIndex];
-    
+
     
 }
 

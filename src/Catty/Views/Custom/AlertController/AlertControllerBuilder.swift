@@ -38,4 +38,9 @@ public final class AlertControllerBuilder: NSObject {
     public static func textFieldAlert(title: String?, message: String?) -> TextFieldAlertDefining {
         TextFieldAlertController(title: title, message: message)
     }
+
+    @objc(PickerAlertWithTitle:message:)
+    public static func pickerAlert(title: String?, message: [String]?) -> AlertActionAdding {
+        PickerAlertController(title: title, message: message)
+    }
 }

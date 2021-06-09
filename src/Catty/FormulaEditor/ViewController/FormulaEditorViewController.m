@@ -751,8 +751,18 @@ NS_ENUM(NSInteger, ButtonIndex) {
 
 - (IBAction)addNewText:(id)sender {
     [self.formulaEditorTextView resignFirstResponder];
+    NSArray *objectList = @[@"obj1", @"obj2", @"obj3", @"obj4", @"obj5"];
     
-    [Util askUserForVariableNameAndPerformAction:@selector(handleNewTextInput:)
+    [Util askUserForObjectPickerAndPerforAction:@selector(handleNewTextInput:)
+                                         target:self
+                                    promptTitle:@"choose object"
+                                  promptMessage:objectList
+                                         isList:NO
+                                   andTextField:formulaEditorTextView
+                                    initialText:[self.formulaEditorTextView getHighlightedText]];
+    
+    
+    /*[Util askUserForVariableNameAndPerformAction:@selector(handleNewTextInput:)
                                           target:self
                                      promptTitle:kUIFENewText
                                    promptMessage:kUIFETextMessage
@@ -760,7 +770,7 @@ NS_ENUM(NSInteger, ButtonIndex) {
                                   maxInputLength:0
 										  isList:NO
                                     andTextField:self.formulaEditorTextView
-                                     initialText:[self.formulaEditorTextView getHighlightedText]];
+                                     initialText:[self.formulaEditorTextView getHighlightedText]];*/
 }
 
 - (void)handleNewTextInput:(NSString*)text

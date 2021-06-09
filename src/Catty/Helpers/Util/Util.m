@@ -233,6 +233,28 @@
                       invalidInputAlertMessage:invalidInputAlertMessage
                                  existingNames:nil];
 }
++ (void)askUserForObjectPickerAndPerforAction:(SEL)action
+                                       target:(id)target
+                                  promptTitle:(NSString*)title
+                                promptMessage:(NSArray<NSString *>*)message
+                                       isList:(BOOL)isList
+                              andTextField:(FormulaEditorTextView *)textView
+                                 initialText:(NSString*)initialText
+{
+    [[[[[AlertControllerBuilder PickerAlertWithTitle:title message:message]
+      addCancelActionWithTitle:kLocalizedCancel handler:^{
+        [textView becomeFirstResponder];
+    }]
+     addDefaultActionWithTitle:kLocalizedOK handler:^{
+        if (target && action) {
+            IMP imp = [target methodForSelector:action];
+            void (*func)(id, SEL, id, BOOL) = (void *)imp;
+            func(target, action, @"ok", isList);
+        }
+    }] build]
+    showWithController:[Util topmostViewController]];
+}
+
 
 + (void)askUserForVariableNameAndPerformAction:(SEL)action
                                          target:(id)target
