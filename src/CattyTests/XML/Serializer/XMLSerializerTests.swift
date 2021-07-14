@@ -98,7 +98,7 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testPenDownBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 41) as! PenDownBrick
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 42) as! PenDownBrick
         let xmlElementPath = "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[42]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: Project())) else {
@@ -112,7 +112,7 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testPenUpBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 42) as! PenUpBrick
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 43) as! PenUpBrick
         let xmlElementPath = "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[43]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: Project())) else {
@@ -126,7 +126,7 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testPenClearBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 43) as! PenClearBrick
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 44) as! PenClearBrick
         let xmlElementPath = "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[44]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: Project())) else {
@@ -140,7 +140,7 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testSetPenSizeBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 44) as! SetPenSizeBrick
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 45) as! SetPenSizeBrick
         let xmlElementPath = "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[45]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: Project())) else {
@@ -154,8 +154,8 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testSetPenColorBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 45) as! SetPenColorBrick
-        let xmlElementPath = "//program/scenes/scene/objectList/object[1]/scriptList/script[1]/brickList/brick[46]"
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 46) as! SetPenColorBrick
+        let xmlElementPath = "//program/scenes/scene/objectList/object[1]/scriptList/script[1]/brickList/brick[47]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: project)) else {
             XCTFail("xmlElement is nil")
@@ -169,7 +169,7 @@ final class XMLSerializerTests: XMLAbstractTest {
     func testStampBrick() {
         let project = self.getProjectForXML(xmlFile: "ValidProjectAllBricks0994")
 
-        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 46) as! StampBrick
+        let brick = (project.scene.object(at: 0)!.scriptList.object(at: 0) as! Script).brickList.object(at: 47) as! StampBrick
         let xmlElementPath = "//program/objectList/object[1]/scriptList/script[1]/brickList/brick[47]"
 
         guard let xmlElement = brick.xmlElement(with: CBXMLSerializerContext(project: Project())) else {
